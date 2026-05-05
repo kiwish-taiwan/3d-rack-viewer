@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>專屬 3D 鐵架展示間</title>
+    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
+    <style>
+        /* 設定背景色並隱藏捲軸 */
+        body { margin: 0; background-color: #e9ecef; font-family: "微軟正黑體", sans-serif; overflow: hidden; }
+        
+        /* --- 1. 左上角面板設計升級 --- */
+        .controls {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.3);
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+            z-index: 10;
+            width: 200px;
+            max-height: 90vh; /* 避免選項太多超出螢幕 */
+            overflow-y: auto; /* 如果選項太多，面板內部可以捲動 */
+        }
+        
+        /* --- 2. 品牌 Logo 區塊的排版 --- */
+        .brand-header {
+            display: flex;
+            align-items: center; 
+            margin-bottom: 13px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #eee;
+        }
+        
+        .brand-header img {
+            max-height: 100px;
+            margin-right: 12px;
+        }
+        
+        .brand-header h2 {
+            margin: 0;
+            color: #333;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .controls h3 { margin-top: 0; color: #555; font-size: 15px; }
+        .controls label { display: block; margin-top: 10px; font-size: 14px; color: #666; }
+        .controls select { width: 100%; padding: 8px; margin-top: 5px; border-radius: 4px; border: 1px solid #ccc; cursor: pointer; }
+        
+        /* --- 3. 右下角的公司聯絡/版權資訊 --- */
+        .company-footer {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            color: #888;
+            font-size: 13px;
+            z-index: 10;
+            text-align: right;
+            pointer-events: none;
+        }
+
+        model-viewer { width: 100vw; height: 100vh; }
+    </style>
+</head>
+<body>
+
+    <!-- 左上角的控制面板 -->
+    <div class="controls">
+        
+        <div class="brand-header">
+            <img src="logo.png" alt="公司Logo">
+            <h2> </h2>
+        </div>
+
+        <h3>選擇鐵架規格</h3>
+        
+        <!-- 🌟 新增：顏色選項 🌟 -->
+        <label for="color">顏色:</label>
+        <select id="color">
+            <option value="silver" selected>銀色</option> <!-- value 使用英文方便命名檔案 -->
+            <option value="black">黑色</option>
+        </select>
+
+        <label for="length">長度 (公分):</label>
+        <select id="length">
+            <option value="43">43</option>
+            <option value="46">46</option>
+            <option value="60" selected>60</option>
+            <option value="65">65</option>
+            <option value="75">75</option>
+            <option value="90">90</option>
+            <option value="120">120</option>
+            <option value="150">150</option>
+        </select>
+
+        <label for="width">深度 (公分):</label>
+        <select id="width">
+            <option value="28">28</option>
+            <option value="30" selected>30</option>
+            <option value="35">35</option>
+            <option value="40">40</option>
+            <option value="46">46</option>
+            <option value="60">60</option>
+        </select>
+
+        <label for="height">高度 (公分):</label>
+        <select id="height">
+            <option value="60">60</option>
+            <option value="75">75</option>
+            <option value="90">90</option>
+            <option value="120">120</option>
+            <option value="150">150</option>
+            <option value="160">160</option>
+            <option value="180" selected>180</option>
+            <option value="210">210</option>
+            <option value="240">240</option>
+        </select>
+
+        <label for="layers">層數:</label>
+        <select id="layers">
+            <option value="2">2層</option>
+            <option value="3">3層</option>
+            <option value="4" selected>4層</option>
+            <option value="5">5層</option>
+            <option value="6">6層</option>
+            <option value="7">7層</option>
+            <option value="8">8層</option>
+        </select>
+    </div>
+
+    <!-- 右下角的公司聯絡資訊 -->
+    <div class="company-footer">
+        © 2026 MIT台灣製造・客製化收納專家<br>
+        https://www.kiwish.com.tw/ | 04-7686426
+    </div>
+
+    <!-- 3D 模型展示區 -->
+    <!-- 注意這裡的預設 src 檔名也更新為包含顏色的格式 -->
+    <model-viewer 
+        id="my-model"
+        src="rack_60x30x180_4L_silver.glb" 
+        camera-controls 
+        auto-rotate
+        shadow-intensity="1.0"
+        exposure="1.5">
+    </model-viewer>
+
+    <!-- 負責切換所有選項的代碼 -->
+    <script>
+        const colorSelect = document.getElementById('color'); // 抓取顏色選單
+        const lengthSelect = document.getElementById('length');
+        const widthSelect = document.getElementById('width');
+        const heightSelect = document.getElementById('height');
+        const layersSelect = document.getElementById('layers');
+        const modelViewer = document.getElementById('my-model');
+
+        function updateModel() {
+            const currentColor = colorSelect.value; // 取得目前選擇的顏色 (silver 或 black)
+            const currentLength = lengthSelect.value;
+            const currentWidth = widthSelect.value;
+            const currentHeight = heightSelect.value;
+            const currentLayers = layersSelect.value;
+            
+            // 🌟 將顏色加入檔名組合中，例如：rack_60x30x180_4L_silver.glb 🌟
+            const newFileName = `rack_${currentLength}x${currentWidth}x${currentHeight}_${currentLayers}L_${currentColor}.glb`;
+            modelViewer.src = newFileName;
+        }
+
+        // 監聽所有下拉選單的變化
+        colorSelect.addEventListener('change', updateModel); // 監聽顏色變化
+        lengthSelect.addEventListener('change', updateModel);
+        widthSelect.addEventListener('change', updateModel);
+        heightSelect.addEventListener('change', updateModel);
+        layersSelect.addEventListener('change', updateModel);
+    </script>
+</body>
+</html>
