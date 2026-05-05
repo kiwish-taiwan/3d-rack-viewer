@@ -2,29 +2,29 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>專屬 3D 鐵架展示間</title>
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
     <style>
         /* 設定背景色並隱藏捲軸 */
         body { margin: 0; background-color: #e9ecef; font-family: "微軟正黑體", sans-serif; overflow: hidden; }
         
-        /* --- 1. 左上角面板設計升級 --- */
+        /* --- 1. 左上角面板設計升級 (電腦版樣式) --- */
         .controls {
             position: absolute;
             top: 20px;
             left: 20px;
-            background: rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.4);
             padding: 15px;
             border-radius: 8px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.15);
             z-index: 10;
             width: 200px;
-            max-height: 90vh; /* 避免選項太多超出螢幕 */
-            overflow-y: auto; /* 如果選項太多，面板內部可以捲動 */
+            max-height: 90vh;
+            overflow-y: auto;
+            backdrop-filter: blur(5px);
         }
         
-        /* --- 2. 品牌 Logo 區塊的排版 --- */
         .brand-header {
             display: flex;
             align-items: center; 
@@ -33,23 +33,15 @@
             border-bottom: 2px solid #eee;
         }
         
-        .brand-header img {
-            max-height: 100px;
-            margin-right: 12px;
-        }
+        .brand-header img { max-height: 100px; margin-right: 12px; }
+        .brand-header h2 { margin: 0; color: #333; font-size: 18px; font-weight: bold; }
+        .controls h3 { margin-top: 0; color: #555; font-size: 15px; margin-bottom: 15px; }
         
-        .brand-header h2 {
-            margin: 0;
-            color: #333;
-            font-size: 18px;
-            font-weight: bold;
-        }
+        .form-group { margin-bottom: 12px; }
+        .form-group label { display: block; font-size: 14px; color: #666; margin-bottom: 5px; }
+        .form-group select { width: 100%; padding: 8px; border-radius: 4px; border: 1px solid #ccc; cursor: pointer; }
 
-        .controls h3 { margin-top: 0; color: #555; font-size: 15px; }
-        .controls label { display: block; margin-top: 10px; font-size: 14px; color: #666; }
-        .controls select { width: 100%; padding: 8px; margin-top: 5px; border-radius: 4px; border: 1px solid #ccc; cursor: pointer; }
-        
-        /* --- 3. 右下角的公司聯絡/版權資訊 --- */
+        /* --- 右下角的公司聯絡資訊 --- */
         .company-footer {
             position: absolute;
             bottom: 20px;
@@ -62,66 +54,85 @@
         }
 
         model-viewer { width: 100vw; height: 100vh; }
-    /* --- 📱 手機版專屬介面設定 --- */
+
+        /* --- 📱 手機版專屬介面設定 --- */
         @media (max-width: 768px) {
             .controls {
-                /* 1. 位置改到最下方，寬度佔滿 */
                 top: auto;
                 bottom: 0;
                 left: 0;
                 width: 100%;
-                box-sizing: border-box; /* 確保內距不會撐破螢幕 */
-                border-radius: 20px 20px 0 0; /* 變成上方圓角的抽屜形狀 */
-                padding: 15px 20px 25px 20px; /* 底部留多一點點空間防誤觸 */
-                
-                /* 2. 限制最大高度，保留上方空間給 3D 鐵架 */
-                max-height: 45vh; /* 最高只佔螢幕的 45% */
-                overflow-y: auto; /* 如果選項太多可以在面板內滑動 */
-
-                /* 3. 使用網格排版，讓「文字」跟「下拉選單」變成左右並排省空間 */
-                display: grid;
-                grid-template-columns: auto 1fr; 
-                align-items: center;
-                gap: 8px 15px; 
+                box-sizing: border-box;
+                border-radius: 15px 15px 0 0;
+                padding: 10px 10px 20px 10px; /* 底部稍微留白防誤觸 */
+                height: auto; /* 讓高度自動適應內容，確保不遮擋 */
+                background: rgba(255, 255, 255, 0.95); 
+                display: flex;
+                flex-direction: column;
             }
 
-            /* 讓標題類佔據整排寬度 */
-            .brand-header, .controls h3 {
-                grid-column: 1 / -1; 
-                margin-bottom: 0;
-            }
-
+            /* 🌟 讓 Logo 回來，置中顯示並縮小，隱藏不必要的文字標題 */
             .brand-header {
-                padding-bottom: 5px;
+                display: flex;
+                justify-content: center; /* Logo 置中 */
+                margin-bottom: 8px;
+                padding-bottom: 6px;
+                border-bottom: 1px solid #ddd; /* 淡淡的分隔線 */
+            }
+            .brand-header img { 
+                max-height: 28px; /* 限制高度極大化省空間 */
+                margin-right: 0; 
+            }
+            .brand-header h2, .controls h3 { display: none; } 
+
+            .form-row {
+                display: flex;
+                gap: 6px; /* 縮小按鈕之間的間距 */
+                margin-bottom: 6px; 
+            }
+            .form-row:last-child { margin-bottom: 0; }
+            
+            .form-group {
+                flex: 1; 
+                display: flex;
+                align-items: center; 
+                margin-bottom: 0;
+                min-width: 0; /* 關鍵：防止內容過長撐破排版 */
             }
 
-            .brand-header img {
-                max-height: 40px; /* 在手機上縮小 Logo 節省空間 */
+            .form-group label {
+                margin-bottom: 0;
+                margin-right: 4px;
+                white-space: nowrap; 
+                font-size: 12px; /* 字體微調，確保完整文字塞得下 */
+                font-weight: bold;
+                color: #333;
             }
 
-            /* 消除原本的間距，適應新的網格排版 */
-            .controls label, .controls select {
-                margin-top: 0; 
+            .form-group select {
+                flex: 1; /* 讓下拉選單填滿剩下的空間 */
+                padding: 2px 4px; /* 縮減按鈕內部空間 */
+                font-size: 12px;
+                min-width: 0; /* 關鍵：防止內容過長撐破排版 */
             }
 
-            /* 4. 把被擋住的公司聯絡資訊移到畫面的「右上角」 */
             .company-footer {
+                top: 10px;
                 bottom: auto;
-                top: 15px;
-                right: 15px;
-                background: rgba(255, 255, 255, 0.6); /* 加上半透明白底讓字更清楚 */
-                padding: 6px 10px;
-                border-radius: 8px;
+                right: 10px;
+                background: rgba(255, 255, 255, 0.7);
+                padding: 4px 8px;
+                border-radius: 6px;
+                font-size: 11px;
             }
         }
     </style>
-    
 </head>
 <body>
 
-    <!-- 左上角的控制面板 -->
     <div class="controls">
         
+        <!-- 🌟 Logo 區塊 -->
         <div class="brand-header">
             <img src="logo.png" alt="公司Logo">
             <h2> </h2>
@@ -129,58 +140,72 @@
 
         <h3>選擇鐵架規格</h3>
         
-        <!-- 🌟 新增：顏色選項 🌟 -->
-        <label for="color">顏色:</label>
-        <select id="color">
-            <option value="silver" selected>銀色</option> <!-- value 使用英文方便命名檔案 -->
-            <option value="black">黑色</option>
-        </select>
+        <!-- 第一列 (長度、深度、高度) -->
+        <div class="form-row">
+            <div class="form-group">
+                <label for="length">長度:</label>
+                <select id="length">
+                    <option value="43">43</option>
+                    <option value="46">46</option>
+                    <option value="60" selected>60</option>
+                    <option value="65">65</option>
+                    <option value="75">75</option>
+                    <option value="90">90</option>
+                    <option value="120">120</option>
+                    <option value="150">150</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="width">深度:</label>
+                <select id="width">
+                    <option value="28">28</option>
+                    <option value="30" selected>30</option>
+                    <option value="35">35</option>
+                    <option value="40">40</option>
+                    <option value="46">46</option>
+                    <option value="60">60</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="height">高度:</label>
+                <select id="height">
+                    <option value="60">60</option>
+                    <option value="75">75</option>
+                    <option value="90">90</option>
+                    <option value="120">120</option>
+                    <option value="150">150</option>
+                    <option value="160">160</option>
+                    <option value="180" selected>180</option>
+                    <option value="210">210</option>
+                    <option value="240">240</option>
+                </select>
+            </div>
+        </div>
 
-        <label for="length">長度 (公分):</label>
-        <select id="length">
-            <option value="43">43</option>
-            <option value="46">46</option>
-            <option value="60" selected>60</option>
-            <option value="65">65</option>
-            <option value="75">75</option>
-            <option value="90">90</option>
-            <option value="120">120</option>
-            <option value="150">150</option>
-        </select>
-
-        <label for="width">深度 (公分):</label>
-        <select id="width">
-            <option value="28">28</option>
-            <option value="30" selected>30</option>
-            <option value="35">35</option>
-            <option value="40">40</option>
-            <option value="46">46</option>
-            <option value="60">60</option>
-        </select>
-
-        <label for="height">高度 (公分):</label>
-        <select id="height">
-            <option value="60">60</option>
-            <option value="75">75</option>
-            <option value="90">90</option>
-            <option value="120">120</option>
-            <option value="150">150</option>
-            <option value="160">160</option>
-            <option value="180" selected>180</option>
-            <option value="210">210</option>
-            <option value="240">240</option>
-        </select>
-
-        <label for="layers">層數:</label>
-        <select id="layers">
-            <option value="2">2層</option>
-            <option value="3">3層</option>
-            <option value="4" selected>4層</option>
-            <option value="5">5層</option>
-            <option value="6">6層</option>
-            <option value="7">7層</option>
-            <option value="8">8層</option>
-        </select>
+        <!-- 第二列 (顏色、層數) -->
+        <div class="form-row">
+            <div class="form-group">
+                <label for="color">顏色:</label>
+                <select id="color">
+                    <option value="silver" selected>銀色</option>
+                    <option value="black">黑色</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="layers">層數:</label>
+                <select id="layers">
+                    <option value="2">2層</option>
+                    <option value="3">3層</option>
+                    <option value="4" selected>4層</option>
+                    <option value="5">5層</option>
+                    <option value="6">6層</option>
+                    <option value="7">7層</option>
+                    <option value="8">8層</option>
+                </select>
+            </div>
+            <!-- 佔位區塊，讓排版對齊 -->
+            <div class="form-group" style="visibility: hidden;"></div>
+        </div>
     </div>
 
     <!-- 右下角的公司聯絡資訊 -->
@@ -190,7 +215,6 @@
     </div>
 
     <!-- 3D 模型展示區 -->
-    <!-- 注意這裡的預設 src 檔名也更新為包含顏色的格式 -->
     <model-viewer 
         id="my-model"
         src="rack_60x30x180_4L_silver.glb" 
@@ -202,7 +226,7 @@
 
     <!-- 負責切換所有選項的代碼 -->
     <script>
-        const colorSelect = document.getElementById('color'); // 抓取顏色選單
+        const colorSelect = document.getElementById('color');
         const lengthSelect = document.getElementById('length');
         const widthSelect = document.getElementById('width');
         const heightSelect = document.getElementById('height');
@@ -210,19 +234,17 @@
         const modelViewer = document.getElementById('my-model');
 
         function updateModel() {
-            const currentColor = colorSelect.value; // 取得目前選擇的顏色 (silver 或 black)
+            const currentColor = colorSelect.value;
             const currentLength = lengthSelect.value;
             const currentWidth = widthSelect.value;
             const currentHeight = heightSelect.value;
             const currentLayers = layersSelect.value;
             
-            // 🌟 將顏色加入檔名組合中，例如：rack_60x30x180_4L_silver.glb 🌟
             const newFileName = `rack_${currentLength}x${currentWidth}x${currentHeight}_${currentLayers}L_${currentColor}.glb`;
             modelViewer.src = newFileName;
         }
 
-        // 監聽所有下拉選單的變化
-        colorSelect.addEventListener('change', updateModel); // 監聽顏色變化
+        colorSelect.addEventListener('change', updateModel);
         lengthSelect.addEventListener('change', updateModel);
         widthSelect.addEventListener('change', updateModel);
         heightSelect.addEventListener('change', updateModel);
