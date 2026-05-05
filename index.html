@@ -62,7 +62,60 @@
         }
 
         model-viewer { width: 100vw; height: 100vh; }
+    /* --- 📱 手機版專屬介面設定 --- */
+        @media (max-width: 768px) {
+            .controls {
+                /* 1. 位置改到最下方，寬度佔滿 */
+                top: auto;
+                bottom: 0;
+                left: 0;
+                width: 100%;
+                box-sizing: border-box; /* 確保內距不會撐破螢幕 */
+                border-radius: 20px 20px 0 0; /* 變成上方圓角的抽屜形狀 */
+                padding: 15px 20px 25px 20px; /* 底部留多一點點空間防誤觸 */
+                
+                /* 2. 限制最大高度，保留上方空間給 3D 鐵架 */
+                max-height: 45vh; /* 最高只佔螢幕的 45% */
+                overflow-y: auto; /* 如果選項太多可以在面板內滑動 */
+
+                /* 3. 使用網格排版，讓「文字」跟「下拉選單」變成左右並排省空間 */
+                display: grid;
+                grid-template-columns: auto 1fr; 
+                align-items: center;
+                gap: 8px 15px; 
+            }
+
+            /* 讓標題類佔據整排寬度 */
+            .brand-header, .controls h3 {
+                grid-column: 1 / -1; 
+                margin-bottom: 0;
+            }
+
+            .brand-header {
+                padding-bottom: 5px;
+            }
+
+            .brand-header img {
+                max-height: 40px; /* 在手機上縮小 Logo 節省空間 */
+            }
+
+            /* 消除原本的間距，適應新的網格排版 */
+            .controls label, .controls select {
+                margin-top: 0; 
+            }
+
+            /* 4. 把被擋住的公司聯絡資訊移到畫面的「右上角」 */
+            .company-footer {
+                bottom: auto;
+                top: 15px;
+                right: 15px;
+                background: rgba(255, 255, 255, 0.6); /* 加上半透明白底讓字更清楚 */
+                padding: 6px 10px;
+                border-radius: 8px;
+            }
+        }
     </style>
+    
 </head>
 <body>
 
